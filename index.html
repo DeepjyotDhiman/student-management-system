@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System | College PBL Micro Project</title>
+    <meta name="description" content="A responsive Student Management System to add, view, edit, search and delete student records. Built with HTML5, CSS3, JavaScript and LocalStorage.">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+
+    <!-- Google Font (falls back to system fonts if offline) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="app">
+        <!-- ================= SIDEBAR / NAVIGATION ================= -->
+        <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+            <div class="sidebar-brand">
+                <span class="brand-logo" data-icon="graduation" aria-hidden="true"></span>
+                <span class="brand-text">
+                    <span class="brand-name">EduManage</span>
+                    <span class="brand-tag">Student Management</span>
+                </span>
+                <button type="button" class="icon-btn sidebar-close" id="sidebarClose" aria-label="Close navigation menu">
+                    <span data-icon="x" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-heading">Menu</p>
+                <ul class="nav-list">
+                    <li>
+                        <a href="#dashboard" class="nav-link" data-section="dashboard" id="nav-dashboard">
+                            <span data-icon="grid" aria-hidden="true"></span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#students" class="nav-link" data-section="students" id="nav-students">
+                            <span data-icon="users" aria-hidden="true"></span>
+                            <span>Students</span>
+                            <span class="nav-badge" id="navStudentCount" aria-label="Total students">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#add" class="nav-link" data-section="add" id="nav-add">
+                            <span data-icon="user-plus" aria-hidden="true"></span>
+                            <span>Add Student</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#about" class="nav-link" data-section="about" id="nav-about">
+                            <span data-icon="info" aria-hidden="true"></span>
+                            <span>About</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-card">
+                    <span class="sidebar-card-icon" data-icon="book" aria-hidden="true"></span>
+                    <p class="sidebar-card-title">PBL Micro Project</p>
+                    <p class="sidebar-card-text">Web Application Development</p>
+                </div>
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+        <!-- ================= MAIN AREA ================= -->
+        <div class="main-wrapper">
+            <header class="topbar">
+                <button type="button" class="icon-btn menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">
+                    <span data-icon="menu" aria-hidden="true"></span>
+                </button>
+                <div class="topbar-title">
+                    <span class="topbar-eyebrow">Student Management System</span>
+                    <span class="topbar-page" id="topbarTitle">Dashboard</span>
+                </div>
+                <div class="topbar-actions">
+                    <span class="topbar-date" id="todayDate"></span>
+                    <a href="#add" class="btn btn-primary btn-sm topbar-add" id="topbarAddBtn" aria-label="Add Student">
+                        <span data-icon="plus" aria-hidden="true"></span>
+                        <span class="topbar-add-text">Add Student</span>
+                    </a>
+                </div>
+            </header>
+
+            <main id="main-content" class="main" tabindex="-1">
+
+                <!-- ============ DASHBOARD ============ -->
+                <section class="section" id="section-dashboard" data-section="dashboard" aria-labelledby="dashboardTitle">
+                    <div class="hero">
+                        <div class="hero-content">
+                            <p class="hero-eyebrow">Welcome back 👋</p>
+                            <h1 id="dashboardTitle">Student Management System</h1>
+                            <p class="hero-subtitle">Manage student records easily and efficiently.</p>
+                        </div>
+                        <span class="hero-art" data-icon="graduation" aria-hidden="true"></span>
+                    </div>
+
+                    <div class="stats-grid">
+                        <article class="stat-card stat-indigo">
+                            <div class="stat-top">
+                                <span class="stat-icon" data-icon="users" aria-hidden="true"></span>
+                            </div>
+                            <p class="stat-label">Total Students</p>
+                            <p class="stat-value" id="statTotal">0</p>
+                            <p class="stat-meta">All enrolled records</p>
+                        </article>
+
+                        <article class="stat-card stat-emerald">
+                            <div class="stat-top">
+                                <span class="stat-icon" data-icon="layers" aria-hidden="true"></span>
+                                <label class="visually-hidden" for="currentSemSelect">Choose current semester</label>
+                                <select id="currentSemSelect" class="mini-select" aria-describedby="statCurrentSemMeta">
+                                    <option value="1">Sem 1</option>
+                                    <option value="2">Sem 2</option>
+                                    <option value="3">Sem 3</option>
+                                    <option value="4">Sem 4</option>
+                                    <option value="5">Sem 5</option>
+                                    <option value="6">Sem 6</option>
+                                    <option value="7">Sem 7</option>
+                                    <option value="8">Sem 8</option>
+                                </select>
+                            </div>
+                            <p class="stat-label">Current Semester</p>
+                            <p class="stat-value" id="statCurrentSem">0</p>
+                            <p class="stat-meta" id="statCurrentSemMeta">Students in Semester 5</p>
+                        </article>
+
+                        <article class="stat-card stat-sky">
+                            <div class="stat-top">
+                                <span class="stat-icon" data-icon="monitor" aria-hidden="true"></span>
+                            </div>
+                            <p class="stat-label">IT Students</p>
+                            <p class="stat-value" id="statIT">0</p>
+                            <p class="stat-meta" id="statITMeta">Information Technology</p>
+                        </article>
+
+                        <article class="stat-card stat-amber">
+                            <div class="stat-top">
+                                <span class="stat-icon" data-icon="trending" aria-hidden="true"></span>
+                            </div>
+                            <p class="stat-label">Recently Added</p>
+                            <p class="stat-value" id="statRecent">0</p>
+                            <p class="stat-meta">In the last 7 days</p>
+                        </article>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <section class="card" aria-labelledby="quickActionsTitle">
+                            <div class="card-header">
+                                <h2 id="quickActionsTitle">Quick Actions</h2>
+                            </div>
+                            <div class="quick-actions">
+                                <a href="#add" class="action-tile action-indigo" id="quickAddBtn">
+                                    <span class="action-icon" data-icon="user-plus" aria-hidden="true"></span>
+                                    <span class="action-text">
+                                        <span class="action-title">Add Student</span>
+                                        <span class="action-desc">Register a new student record</span>
+                                    </span>
+                                    <span class="action-arrow" data-icon="arrow-right" aria-hidden="true"></span>
+                                </a>
+                                <a href="#students" class="action-tile action-emerald" id="quickViewBtn">
+                                    <span class="action-icon" data-icon="users" aria-hidden="true"></span>
+                                    <span class="action-text">
+                                        <span class="action-title">View Students</span>
+                                        <span class="action-desc">Search, edit and manage records</span>
+                                    </span>
+                                    <span class="action-arrow" data-icon="arrow-right" aria-hidden="true"></span>
+                                </a>
+                            </div>
+                        </section>
+
+                        <section class="card" aria-labelledby="recentTitle">
+                            <div class="card-header">
+                                <h2 id="recentTitle">Recent Students</h2>
+                                <a href="#students" class="link-btn" id="viewAllLink">View all</a>
+                            </div>
+                            <ul class="recent-list" id="recentList"></ul>
+                        </section>
+                    </div>
+                </section>
+
+                <!-- ============ STUDENTS LIST ============ -->
+                <section class="section" id="section-students" data-section="students" aria-labelledby="studentsTitle" hidden>
+                    <div class="page-header">
+                        <div>
+                            <h2 id="studentsTitle">Students</h2>
+                            <p class="page-subtitle">Search, filter and manage all student records.</p>
+                        </div>
+                        <a href="#add" class="btn btn-primary" id="studentsAddBtn">
+                            <span data-icon="plus" aria-hidden="true"></span>
+                            <span>Add Student</span>
+                        </a>
+                    </div>
+
+                    <div class="card toolbar" role="search">
+                        <div class="search-box">
+                            <label for="searchInput" class="visually-hidden">Search students</label>
+                            <span class="search-icon" data-icon="search" aria-hidden="true"></span>
+                            <input type="search" id="searchInput" class="input" placeholder="Search by ID, name, email or course…" autocomplete="off">
+                            <button type="button" class="search-clear" id="searchClear" aria-label="Clear search" hidden>
+                                <span data-icon="x" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="filters">
+                            <div class="filter-field">
+                                <label for="filterCourse">Course / Branch</label>
+                                <select id="filterCourse" class="input select">
+                                    <option value="">All courses</option>
+                                </select>
+                            </div>
+                            <div class="filter-field">
+                                <label for="filterSemester">Semester</label>
+                                <select id="filterSemester" class="input select">
+                                    <option value="">All semesters</option>
+                                    <option value="1">Semester 1</option>
+                                    <option value="2">Semester 2</option>
+                                    <option value="3">Semester 3</option>
+                                    <option value="4">Semester 4</option>
+                                    <option value="5">Semester 5</option>
+                                    <option value="6">Semester 6</option>
+                                    <option value="7">Semester 7</option>
+                                    <option value="8">Semester 8</option>
+                                </select>
+                            </div>
+                            <div class="filter-field">
+                                <label for="sortSelect">Sort by</label>
+                                <select id="sortSelect" class="input select">
+                                    <option value="recent">Recently added</option>
+                                    <option value="oldest">Oldest first</option>
+                                    <option value="name-asc">Name (A–Z)</option>
+                                    <option value="name-desc">Name (Z–A)</option>
+                                    <option value="id-asc">Student ID</option>
+                                    <option value="semester-asc">Semester</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-ghost filter-reset" id="resetFiltersBtn">
+                                <span data-icon="refresh" aria-hidden="true"></span>
+                                <span>Reset</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="results-count" id="resultsCount" aria-live="polite"></p>
+
+                    <!-- Desktop table -->
+                    <div class="card table-card" id="tableCard">
+                        <div class="table-wrap">
+                            <table class="student-table">
+                                <caption class="visually-hidden">List of students</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Student ID</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Phone</th>
+                                        <th scope="col">Course</th>
+                                        <th scope="col">Semester</th>
+                                        <th scope="col" class="th-actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Mobile / tablet cards -->
+                    <div class="student-cards" id="studentCards"></div>
+
+                    <!-- Empty state (filled by JS) -->
+                    <div class="card empty-state" id="studentsEmpty" hidden></div>
+                </section>
+
+                <!-- ============ ADD / EDIT STUDENT ============ -->
+                <section class="section" id="section-add" data-section="add" aria-labelledby="formTitle" hidden>
+                    <div class="page-header">
+                        <div>
+                            <h2 id="formTitle">Add Student</h2>
+                            <p class="page-subtitle" id="formSubtitle">Fill in the details below to register a new student.</p>
+                        </div>
+                    </div>
+
+                    <form class="card form-card" id="studentForm" novalidate>
+                        <div class="form-grid">
+                            <div class="field" data-field="id">
+                                <label for="studentId">Student ID <span class="req" aria-hidden="true">*</span></label>
+                                <div class="input-wrap">
+                                    <span class="input-icon" data-icon="id" aria-hidden="true"></span>
+                                    <input type="text" id="studentId" name="id" class="input has-icon" placeholder="e.g. STU006" maxlength="15" autocomplete="off" required aria-describedby="studentId-hint studentId-error">
+                                </div>
+                                <p class="field-hint" id="studentId-hint">Must be unique. Letters, numbers or hyphens.</p>
+                                <p class="field-error" id="studentId-error" role="alert"></p>
+                            </div>
+
+                            <div class="field" data-field="name">
+                                <label for="studentName">Student Name <span class="req" aria-hidden="true">*</span></label>
+                                <div class="input-wrap">
+                                    <span class="input-icon" data-icon="user" aria-hidden="true"></span>
+                                    <input type="text" id="studentName" name="name" class="input has-icon" placeholder="e.g. Rahul Patel" maxlength="60" autocomplete="off" required aria-describedby="studentName-error">
+                                </div>
+                                <p class="field-error" id="studentName-error" role="alert"></p>
+                            </div>
+
+                            <div class="field" data-field="email">
+                                <label for="studentEmail">Email <span class="req" aria-hidden="true">*</span></label>
+                                <div class="input-wrap">
+                                    <span class="input-icon" data-icon="mail" aria-hidden="true"></span>
+                                    <input type="email" id="studentEmail" name="email" class="input has-icon" placeholder="e.g. rahul@example.com" maxlength="80" autocomplete="off" inputmode="email" required aria-describedby="studentEmail-error">
+                                </div>
+                                <p class="field-error" id="studentEmail-error" role="alert"></p>
+                            </div>
+
+                            <div class="field" data-field="phone">
+                                <label for="studentPhone">Phone <span class="req" aria-hidden="true">*</span></label>
+                                <div class="input-wrap">
+                                    <span class="input-prefix" aria-hidden="true">+91</span>
+                                    <input type="tel" id="studentPhone" name="phone" class="input has-prefix" placeholder="9876543210" maxlength="10" inputmode="numeric" autocomplete="off" required aria-describedby="studentPhone-hint studentPhone-error">
+                                </div>
+                                <p class="field-hint" id="studentPhone-hint">10-digit Indian mobile number.</p>
+                                <p class="field-error" id="studentPhone-error" role="alert"></p>
+                            </div>
+
+                            <div class="field" data-field="course">
+                                <label for="studentCourse">Course / Branch <span class="req" aria-hidden="true">*</span></label>
+                                <select id="studentCourse" name="course" class="input select" required aria-describedby="studentCourse-error">
+                                    <option value="">Select course / branch</option>
+                                </select>
+                                <p class="field-error" id="studentCourse-error" role="alert"></p>
+                            </div>
+
+                            <div class="field" data-field="semester">
+                                <label for="studentSemester">Semester <span class="req" aria-hidden="true">*</span></label>
+                                <select id="studentSemester" name="semester" class="input select" required aria-describedby="studentSemester-error">
+                                    <option value="">Select semester</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                </select>
+                                <p class="field-error" id="studentSemester-error" role="alert"></p>
+                            </div>
+                        </div>
+
+                        <p class="form-note"><span class="req">*</span> All fields are required.</p>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-ghost" id="resetBtn">
+                                <span data-icon="refresh" aria-hidden="true"></span>
+                                <span id="resetBtnText">Reset</span>
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="saveBtn">
+                                <span data-icon="save" aria-hidden="true"></span>
+                                <span id="saveBtnText">Save Student</span>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- ============ ABOUT ============ -->
+                <section class="section" id="section-about" data-section="about" aria-labelledby="aboutTitle" hidden>
+                    <div class="page-header">
+                        <div>
+                            <h2 id="aboutTitle">About Student Management System</h2>
+                            <p class="page-subtitle">College PBL Micro Project — Web Application Development</p>
+                        </div>
+                    </div>
+
+                    <div class="about-grid">
+                        <article class="card about-card">
+                            <span class="about-icon" data-icon="graduation" aria-hidden="true"></span>
+                            <h3>Project Overview</h3>
+                            <p>This Student Management System is a web-based application developed as a college PBL micro project. It provides a simple interface for managing student records including student ID, name, email, phone, course/branch and semester.</p>
+                            <ul class="feature-list">
+                                <li><span data-icon="check" aria-hidden="true"></span>Add, view, edit and delete students</li>
+                                <li><span data-icon="check" aria-hidden="true"></span>Instant search, filters and sorting</li>
+                                <li><span data-icon="check" aria-hidden="true"></span>Live dashboard statistics</li>
+                                <li><span data-icon="check" aria-hidden="true"></span>Data saved in the browser (LocalStorage)</li>
+                                <li><span data-icon="check" aria-hidden="true"></span>Fully responsive — works on mobile phones</li>
+                            </ul>
+                        </article>
+
+                        <article class="card about-card">
+                            <h3>Technology Used</h3>
+                            <ul class="tech-grid">
+                                <li class="tech-item tech-html">
+                                    <span class="tech-icon" data-icon="code" aria-hidden="true"></span>
+                                    <span><strong>HTML5</strong><small>Semantic structure</small></span>
+                                </li>
+                                <li class="tech-item tech-css">
+                                    <span class="tech-icon" data-icon="layout" aria-hidden="true"></span>
+                                    <span><strong>CSS3</strong><small>Responsive styling</small></span>
+                                </li>
+                                <li class="tech-item tech-js">
+                                    <span class="tech-icon" data-icon="zap" aria-hidden="true"></span>
+                                    <span><strong>JavaScript</strong><small>Application logic</small></span>
+                                </li>
+                                <li class="tech-item tech-ls">
+                                    <span class="tech-icon" data-icon="database" aria-hidden="true"></span>
+                                    <span><strong>LocalStorage</strong><small>Persistent data</small></span>
+                                </li>
+                            </ul>
+                            <dl class="project-meta">
+                                <div><dt>Project Type</dt><dd>PBL Micro Project</dd></div>
+                                <div><dt>Subject</dt><dd>Web Application Development</dd></div>
+                                <div><dt>Backend</dt><dd>None (static website)</dd></div>
+                                <div><dt>Hosting</dt><dd>GitHub Pages</dd></div>
+                            </dl>
+                        </article>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="footer">
+                <p>&copy; <span id="footerYear">2026</span> Student Management System &middot; College PBL Micro Project</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ================= VIEW STUDENT MODAL ================= -->
+    <div class="modal" id="viewModal" role="dialog" aria-modal="true" aria-labelledby="viewModalTitle" hidden>
+        <div class="modal-dialog">
+            <div class="modal-header view-header">
+                <span class="avatar avatar-lg" id="viewAvatar" aria-hidden="true"></span>
+                <div class="view-heading">
+                    <h2 id="viewModalTitle">Student Details</h2>
+                    <p class="view-sub" id="viewSub"></p>
+                </div>
+                <button type="button" class="icon-btn modal-x" data-close-modal aria-label="Close student details">
+                    <span data-icon="x" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <dl class="detail-list">
+                    <div class="detail-item"><dt><span data-icon="id" aria-hidden="true"></span>Student ID</dt><dd id="viewId"></dd></div>
+                    <div class="detail-item"><dt><span data-icon="user" aria-hidden="true"></span>Student Name</dt><dd id="viewName"></dd></div>
+                    <div class="detail-item"><dt><span data-icon="mail" aria-hidden="true"></span>Email</dt><dd id="viewEmail"></dd></div>
+                    <div class="detail-item"><dt><span data-icon="phone" aria-hidden="true"></span>Phone</dt><dd id="viewPhone"></dd></div>
+                    <div class="detail-item"><dt><span data-icon="book" aria-hidden="true"></span>Course / Branch</dt><dd id="viewCourse"></dd></div>
+                    <div class="detail-item"><dt><span data-icon="layers" aria-hidden="true"></span>Semester</dt><dd id="viewSemester"></dd></div>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ghost" data-close-modal id="viewCloseBtn" data-autofocus>Close</button>
+                <button type="button" class="btn btn-primary" id="viewEditBtn">
+                    <span data-icon="edit" aria-hidden="true"></span>
+                    <span>Edit</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= DELETE CONFIRM MODAL ================= -->
+    <div class="modal" id="deleteModal" role="alertdialog" aria-modal="true" aria-labelledby="deleteModalTitle" aria-describedby="deleteModalText" hidden>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-body confirm-body">
+                <span class="confirm-icon" data-icon="trash" aria-hidden="true"></span>
+                <h2 id="deleteModalTitle">Delete Student</h2>
+                <p id="deleteModalText">Are you sure you want to delete this student?</p>
+                <p class="confirm-student" id="deleteStudentName"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ghost" data-close-modal id="deleteCancelBtn" data-autofocus>Cancel</button>
+                <button type="button" class="btn btn-danger" id="deleteConfirmBtn">
+                    <span data-icon="trash" aria-hidden="true"></span>
+                    <span>Delete</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TOASTS ================= -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="false"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
